@@ -1,23 +1,31 @@
-"use client";
+import Link from "next/link";
+import { fromDateStr, toDateStr, weekDays, weekdayShort } from "@/lib/date";
 
-import { useState } from "react";
-import { isSameDay, weekDays, weekdayShort } from "@/lib/date";
-
-export function WeekStrip() {
-  const today = new Date();
-  const [selected, setSelected] = useState(today);
-  const days = weekDays(today);
+/**
+ * The week containing the selected day. Each day links to `/?date=…`, so the
+ * dashboard re-queries that day's completion state. Today and the selected day
+ * are highlighted distinctly.
+ */
+export function WeekStrip({
+  selected,
+  today,
+}: {
+  selected: string;
+  today: string;
+}) {
+  const days = weekDays(fromDateStr(selected));
 
   return (
     <div className="flex justify-between gap-1 px-4 py-3">
       {days.map((d) => {
-        const active = isSameDay(d, selected);
-        const isToday = isSameDay(d, today);
+        const dStr = toDateStr(d);
+        const active = dStr === selected;
+        const isToday = dStr === today;
         return (
-          <button
-            key={d.toISOString()}
-            type="button"
-            onClick={() => setSelected(d)}
+          <Link
+            key={dStr}
+            href={dStr === today ? "/" : `/?date=${dStr}`}
+            scroll={false}
             className="flex flex-1 flex-col items-center gap-1.5"
           >
             <span
@@ -36,7 +44,7 @@ export function WeekStrip() {
             >
               {d.getDate()}
             </span>
-          </button>
+          </Link>
         );
       })}
     </div>

@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { Gauge, Settings } from "lucide-react";
+import { Gauge } from "lucide-react";
+import { SignOutButton } from "@/components/auth/sign-out-button";
 
 export function TopBar({
   dateLabel,
@@ -20,13 +20,7 @@ export function TopBar({
           <Gauge className="size-5" />
           {completionPct.toFixed(1)}%
         </span>
-        <Link
-          href="/settings"
-          aria-label="Settings"
-          className="flex size-10 items-center justify-center rounded-full bg-card border border-border transition active:scale-95"
-        >
-          <Settings className="size-5" />
-        </Link>
+        <SignOutButton />
       </div>
     </header>
   );
