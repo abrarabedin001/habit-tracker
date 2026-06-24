@@ -1,26 +1,75 @@
 @import "tailwindcss";
 
+/*
+ * Theme tokens. Light is the default; dark applies via the OS preference OR an
+ * explicit `html.dark` class (set by the theme switcher in Phase 3).
+ * See plan/04-ui-design.md.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f4f5;
+  --card: #ffffff;
+  --foreground: #0b0b0c;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #f5b301; /* brand amber */
+  --accent-foreground: #0b0b0c;
+  --ring: #f5b301;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: #0b0b0c;
+    --card: #161618;
+    --foreground: #f3f3f4;
+    --muted: #9ca3af;
+    --border: #26262a;
+    --accent: #f5b301;
+    --accent-foreground: #0b0b0c;
+    --ring: #f5b301;
+  }
+}
+
+:root.dark {
+  --background: #0b0b0c;
+  --card: #161618;
+  --foreground: #f3f3f4;
+  --muted: #9ca3af;
+  --border: #26262a;
+  --accent: #f5b301;
+  --accent-foreground: #0b0b0c;
+  --ring: #f5b301;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-card: var(--card);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  /* Safe-area padding for installed PWA. */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
