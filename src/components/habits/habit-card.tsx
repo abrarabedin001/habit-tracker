@@ -1,26 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useOptimistic, useTransition } from "react";
 import { Check, FilePlus2 } from "lucide-react";
 import { getHabitColor } from "@/lib/habits/palette";
-import type { HabitView } from "@/lib/habits/mock";
+import type { HabitView } from "@/lib/habits/types";
+import { toggleCompletion } from "@/lib/habits/actions";
 import { HabitIcon } from "./habit-icon";
 import { ContributionGrid } from "./contribution-grid";
 
 /**
  * Habit card: icon · title + streak · note button · complete toggle, with the
- * contribution grid below (Grid view). Tick-off is optimistic/local for now;
- * wired to a server action in Phase 1 (see plan/03-roadmap.md).
+ * contribution grid below. The toggle writes a `habit_log` for `selectedDate`
+ * via a server action, updating optimistically while the action runs.
  */
 export function HabitCard({
   habit,
+  selectedDate,
   showGrid = true,
 }: {
   habit: HabitView;
+  selectedDate: string;
   showGrid?: boolean;
 }) {
   const { base, tint } = getHabitColor(habit.color);
-  const [done, setDone] = useState(habit.completedToday);
+  const [, startTransition] = useTransition();
+  const [done, setDone] = useOptimistic(habit.completedToday);
+
+  function toggle() {
+    startTransition(async () => {
+      setDone(!done);
+      await toggleCompletion(habit.id, selectedDate);
+    });
+  }
 
   return (
     <article className="rounded-2xl border border-border bg-card p-4 shadow-sm">
@@ -49,7 +60,7 @@ export function HabitCard({
           type="button"
           aria-label={done ? "Mark incomplete" : "Mark complete"}
           aria-pressed={done}
-          onClick={() => setDone((d) => !d)}
+          onClick={toggle}
           className="flex size-11 items-center justify-center rounded-full transition active:scale-95"
           style={
             done

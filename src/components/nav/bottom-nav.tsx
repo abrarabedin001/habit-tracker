@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Crown, ScrollText } from "lucide-react";
+import { LayoutGrid, Plus, ScrollText } from "lucide-react";
 
 const ITEMS = [
   { href: "/", label: "Habits", icon: LayoutGrid },
-  { href: "/premium", label: "Premium", icon: Crown, primary: true },
+  { href: "/new", label: "Add habit", icon: Plus, primary: true },
   { href: "/logs", label: "Logs", icon: ScrollText },
 ];
 
