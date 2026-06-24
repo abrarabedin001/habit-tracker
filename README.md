@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personal Tracker
 
-## Getting Started
+A mobile-first, installable (PWA) habit & personal tracker. Built with Next.js,
+NeonDB (Postgres), Drizzle ORM, and better-auth. Inspired by the "TickOff" app.
 
-First, run the development server:
+> 📁 See [`plan/`](./plan) for the product vision, architecture, data model, and roadmap.
+> The current state is **Phase 0 — Skeleton** (the dashboard renders mock data).
+
+## Stack
+
+- **Next.js 16** (App Router, React 19) + **TypeScript** + **Tailwind CSS v4**
+- **NeonDB** (serverless Postgres) via **Drizzle ORM**
+- **better-auth** (email/password) with the Drizzle adapter
+- **PWA**: web manifest + theme/viewport metadata (offline service worker is Phase 3)
+- Icons: **lucide-react** · Package manager: **pnpm**
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env        # then fill in the values
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Var | What |
+|-----|------|
+| `DATABASE_URL` | Neon pooled Postgres connection string |
+| `BETTER_AUTH_SECRET` | random secret — `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | app base URL (e.g. `http://localhost:3000`) |
+| `NEXT_PUBLIC_APP_URL` | public base URL for the browser auth client |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Database
 
-## Learn More
+The Drizzle schema lives in [`src/lib/db/`](./src/lib/db) (`schema.ts` for app
+tables, `auth-schema.ts` for better-auth tables). To create the tables on Neon:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm db:generate    # generate SQL migrations from the schema
+pnpm db:migrate     # apply them to DATABASE_URL
+# or, for rapid local iteration:
+pnpm db:push        # push the schema directly (no migration files)
+pnpm db:studio      # browse data
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> The better-auth tables in `auth-schema.ts` can be regenerated any time with
+> `pnpm dlx @better-auth/cli@latest generate` if the auth config changes.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Run
 
-## Deploy on Vercel
+```bash
+pnpm dev            # http://localhost:3000
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project layout
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/app/            # routes — (app) shell, api/auth handler, manifest
+src/components/     # UI — nav/ and habits/
+src/lib/            # auth, db (Drizzle), habits/ (palette, mock), date utils
+plan/               # planning docs (read these first)
+drizzle/            # generated migrations
+```
+
+## Deploy
+
+Target is **Vercel** + **Neon**. Set the env vars in the Vercel project and run
+migrations against the Neon database. Docker is optional (not required to run).
+# habit-tracker
