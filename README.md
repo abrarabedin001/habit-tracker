@@ -67,3 +67,4 @@ drizzle/            # generated migrations
 Target is **Vercel** + **Neon**. Set the env vars in the Vercel project and run
 migrations against the Neon database. Docker is optional (not required to run).
 # habit-tracker
+# habit-tracker
