@@ -97,7 +97,7 @@ function Field({
   label: string;
   value: string;
   onChange: (v: string) => void;
-} & React.InputHTMLAttributes<HTMLInputElement>) {
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "value">) {
   return (
     <label className="block space-y-2">
       <span className="text-sm font-semibold">{label}</span>
